@@ -16,6 +16,10 @@ create-assume-role =
         }";
   }; f
 
+instances =
+    !f() {
+      aws ec2 describe-instances --filters Name=tag:Name,Values="${1}" --query 'Reservations[].Instances[].[Tags[?Key==`Name`] | [0].Value,PrivateIpAddress,State.Name]' --output table
+    }; f
 
 running-instances = ec2 describe-instances \
     --filter Name=instance-state-name,Values=running \
